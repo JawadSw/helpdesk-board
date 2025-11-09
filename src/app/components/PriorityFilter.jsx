@@ -2,21 +2,16 @@
 
 export default function PriorityFilter({ value, onChange }) {
   const options = ['All', 'Low', 'Medium', 'High', 'Critical'];
-
   return (
-    <div>
-      <label className="block text-sm font-medium mb-1">Priority</label>
+    <label className="block">
+      <span className="text-xs text-neutral-300">Priority</span>
       <select
+        className="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full border rounded-md px-2 py-1 text-sm"
       >
-        {options.map((priority) => (
-          <option key={priority} value={priority}>
-            {priority}
-          </option>
-        ))}
+        {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
-    </div>
+    </label>
   );
 }
