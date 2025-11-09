@@ -27,11 +27,11 @@ function tweakPriority(p) {
 export default function Board() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const [error, setError] = useState(null);
 
   const [filters, setFilters] = useState({ status: 'All', priority: 'All' });
-  const [search, setSearch]   = useState('');
-  const [queue, setQueue]     = useState({}); // { [id]: true }
+  const [search, setSearch] = useState('');
+  const [queue, setQueue] = useState({}); // { [id]: true }
 
   // fetch on mount
   useEffect(() => {
@@ -48,14 +48,17 @@ export default function Board() {
         if (alive) setLoading(false);
       }
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // live updates 6–10s with cleanup
   useEffect(() => {
     if (!tickets.length) return;
     let timer;
-    const min = 6000, max = 10000;
+    const min = 6000,
+      max = 10000;
 
     const run = () => {
       const delay = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -64,13 +67,12 @@ export default function Board() {
           if (!prev.length) return prev;
           const idx = Math.floor(Math.random() * prev.length);
           const t = prev[idx];
-          const changeStatus = Math.random() < 0.6; // status more likely than priority
-
+          const changeStatus = Math.random() < 0.6; 
           const updated = {
             ...t,
             status: changeStatus ? nextStatus(t.status) : t.status,
             priority: changeStatus ? t.priority : tweakPriority(t.priority),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           };
 
           const arr = [...prev];
@@ -90,16 +92,23 @@ export default function Board() {
     return tickets.filter(t => {
       const sOk = filters.status === 'All' || t.status === filters.status;
       const pOk = filters.priority === 'All' || t.priority === filters.priority;
-      const qOk = !q || t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q);
+      const qOk =
+        !q ||
+        t.title.toLowerCase().includes(q) ||
+        t.description.toLowerCase().includes(q);
       return sOk && pOk && qOk;
     });
   }, [tickets, filters, search]);
 
-  const addToQueue = (id) =>
-    setQueue(prev => prev[id] ? prev : { ...prev, [id]: true });
+  const addToQueue = id =>
+    setQueue(prev => (prev[id] ? prev : { ...prev, [id]: true }));
 
-  const removeFromQueue = (id) =>
-    setQueue(prev => { const n = { ...prev }; delete n[id]; return n; });
+  const removeFromQueue = id =>
+    setQueue(prev => {
+      const n = { ...prev };
+      delete n[id];
+      return n;
+    });
 
   const clearQueue = () => setQueue({});
 
@@ -107,17 +116,17 @@ export default function Board() {
   const isEmpty = !loading && !error && visibleTickets.length === 0;
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <section className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       {/* Left: filters + list */}
       <div className="lg:col-span-9 space-y-4">
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="mb-4 grid gap-3 md:grid-cols-4">
           <StatusFilter
             value={filters.status}
-            onChange={(v) => setFilters(f => ({ ...f, status: v }))}
+            onChange={v => setFilters(f => ({ ...f, status: v }))}
           />
           <PriorityFilter
             value={filters.priority}
-            onChange={(v) => setFilters(f => ({ ...f, priority: v }))}
+            onChange={v => setFilters(f => ({ ...f, priority: v }))}
           />
           <SearchBox
             value={search}

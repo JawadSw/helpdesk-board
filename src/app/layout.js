@@ -1,9 +1,8 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import './globals.css';
 
 export const metadata = {
   title: 'Helpdesk Ticket Board',
-  description: 'Filter, search, queue, and watch live ticket updates.',
+  description: 'Filter, search, and manage support tickets.',
 };
 
 export default function RootLayout({ children }) {
